@@ -1,9 +1,9 @@
-import {Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import PokemonSearchScreen from '../modules/screens/PokemonSearchScreen';
-import PokemonListAddedScreen from '../modules/screens/PokemonListAddedScreen';
+import PokemonSearchScreen from '../modules/Pokemons/screens/PokemonSearchScreen';
+import PokemonListAddedScreen from '../modules/Pokemons/screens/PokemonListAddedScreen';
+import PokemonListScreen from '../modules/Pokemons/screens/PokemonListScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -11,14 +11,6 @@ const TAB_ICONS = {
   SearchScreen: 'search',
   ListScreen: 'clipboard-outline',
   AddedScreen: 'layers',
-};
-
-const List = () => {
-  return (
-    <View style={{flex: 1}}>
-      <Text>List componnent</Text>
-    </View>
-  );
 };
 
 const Navigator = () => {
@@ -36,7 +28,7 @@ const Navigator = () => {
           headerShown: false,
         })}>
         <Tab.Screen name="SearchScreen" component={PokemonSearchScreen} />
-        <Tab.Screen name="ListScreen" component={List} />
+        <Tab.Screen name="ListScreen" component={PokemonListScreen} />
         <Tab.Screen name="AddedScreen" component={PokemonListAddedScreen} />
       </Tab.Navigator>
     </NavigationContainer>

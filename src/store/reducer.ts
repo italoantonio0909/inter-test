@@ -1,5 +1,5 @@
-import { pokemonApiSlice } from '../modules/slices/pokemonApiSlice';
-import pokemonReducer from '../modules/slices/pokemonSlice';
+import { pokemonApiSlice } from '../modules/Pokemons/slices/pokemonApiSlice';
+import pokemonReducer from '../modules/Pokemons/slices/pokemonSlice';
 
 const reducer = {
     [pokemonApiSlice.reducerPath]: pokemonApiSlice.reducer,

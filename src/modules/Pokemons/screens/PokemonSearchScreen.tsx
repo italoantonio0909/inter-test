@@ -4,25 +4,25 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  SafeAreaView,
   Alert,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'tailwind-react-native-classnames';
 import {useState} from 'react';
 import {Input} from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {PokemonListSelected} from '../interfaces/PokemonListSelected';
-import {useAppDispatch, useAppSelector} from '../../hooks/useRedux';
+import {useAppDispatch, useAppSelector} from '../../../hooks/useRedux';
 import {pokemonAddList} from '../slices/pokemonSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {usePokemonSearchBynameQuery} from '../slices/pokemonApiSlice';
+import {PokemonListSelected} from '../interfaces/PokemonListSelected';
 
 const PokemonSearchScreen = () => {
   const dispatch = useAppDispatch();
 
   const [pokemonName, setPokemonName] = useState<string>('');
 
-  const {pokemonListSelected} = useAppSelector(state => state.pokemon);
+  const {PokemonListSelected} = useAppSelector(state => state.pokemon);
 
   const {data, isFetching} = usePokemonSearchBynameQuery(
     {
@@ -70,13 +70,14 @@ const PokemonSearchScreen = () => {
   };
 
   return (
-    <SafeAreaView style={tw`bg-white flex-grow`}>
+    <SafeAreaView style={tw`bg-black flex-grow`}>
       <Text style={tw`text-center py-5 text-xl`}>Pokemon Search</Text>
       <View style={tw`border-t border-gray-200 flex-shrink`}>
         <View>
           <Input
             placeholder="Pokemon name"
             autoCompleteType
+            autoCapitalize="none"
             value={pokemonName}
             onChangeText={e => setPokemonName(e)}
           />

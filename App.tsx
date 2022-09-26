@@ -1,8 +1,7 @@
 import React from 'react';
 import {Provider} from 'react-redux';
 import store from './src/store/index';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Navigator from './src/navigation/navigator';
+import Navigator from './src/navigation/Navigator';
 
 const App = () => {
   return (
