@@ -6,15 +6,19 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
-import tw from 'tailwind-react-native-classnames';
 import {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../hooks/useRedux';
 import {pokemonUpdateList} from '../slices/pokemonSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PokemonListSelected} from '../interfaces/PokemonListSelected';
+import {Card} from '@rneui/themed';
+import {useTailwind} from 'tailwind-rn';
 
 const PokemonListAddedScreen = () => {
+  const tw = useTailwind();
+
   const dispatch = useAppDispatch();
 
   const {pokemonListSelected} = useAppSelector(state => state.pokemon);
@@ -34,34 +38,57 @@ const PokemonListAddedScreen = () => {
     checkIfPokemonListIsEmpty();
   }, []);
 
+  const Item = ({name, moves, species}: PokemonListSelected) => {
+    return (
+      <Card
+        containerStyle={[tw('p-5 rounded-lg'), {backgroundColor: '#59C1CC'}]}
+        key={`pokemon-added-${name}`}>
+        <View>
+          <View style={tw('flex-row justify-between')}>
+            <View>
+              <Text style={[tw('text-2xl font-bold'), {color: 'white'}]}>
+                {name}
+              </Text>
+            </View>
+            <View>
+              <Text style={[tw('text-2xl font-bold'), {color: 'white'}]}>
+                {species}
+              </Text>
+            </View>
+            <View>
+              {moves &&
+                moves.slice(0, 5).map(e => (
+                  <Text
+                    key={`pokemon-move-${e.name}`}
+                    style={[tw('font-bold')]}>
+                    {e.name}
+                  </Text>
+                ))}
+            </View>
+          </View>
+        </View>
+      </Card>
+    );
+  };
+
   return (
-    <SafeAreaView style={tw`bg-black`}>
-      <Text style={tw`text-center py-5 text-xl`}>Pokemon added</Text>
+    <ScrollView style={{backgroundColor: 'white'}}>
+      <View style={{marginTop: 10}}>
+        <View style={[tw('py-5 border-b'), {borderColor: '#59C1CC'}]}>
+          <Text
+            style={[tw(`text-center text-xl font-bold`), {color: '#59C1CC'}]}>
+            List pokemons added
+          </Text>
+        </View>
+      </View>
       {pokemonListSelected && (
         <FlatList
           data={pokemonListSelected}
           keyExtractor={item => `${item?.order}`}
-          renderItem={({item: {name, order, species, moves}}) => (
-            <TouchableOpacity
-              key={`pokemon-added-${name}`}
-              style={tw`flex-row justify-between items-center px-10`}>
-              <View>
-                <Text>{name}</Text>
-                <Text>{order}</Text>
-              </View>
-              <View>
-                {moves &&
-                  moves
-                    .slice(0, 5)
-                    .map(e => (
-                      <Text key={`pokemon-added-moves-${name}`}>{e.name}</Text>
-                    ))}
-              </View>
-            </TouchableOpacity>
-          )}
+          renderItem={({item}) => <Item {...item} />}
         />
       )}
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

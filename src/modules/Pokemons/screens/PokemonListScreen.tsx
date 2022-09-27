@@ -5,12 +5,16 @@ import {
   StyleSheet,
   ActivityIndicator,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import {usePokemonListPaginateQuery} from '../slices/pokemonApiSlice';
 import {useState, useEffect} from 'react';
-// import tw from 'tailwind-react-native-classnames';
+import {Card} from '@rneui/themed';
+import {useTailwind} from 'tailwind-rn';
 
 const PokemonListScreen = () => {
+  const tw = useTailwind();
+
   const [pokemons, setPokemons] = useState<Array<{name: string; url: string}>>(
     [],
   );
@@ -23,18 +27,32 @@ const PokemonListScreen = () => {
   });
 
   const renderItem = (item: {item: {name: string; url: string}}) => {
+    const {
+      item: {name, url},
+    } = item;
     return (
-      <View style={styles.itemWrapperStyle}>
-        <View style={styles.contentWrapperStyle}>
-          <Text style={styles.txtNameStyle}>{`${item.item.name}`}</Text>
+      <Card
+        key={`pokemon-${name}-${url}`}
+        containerStyle={[
+          tw('p-5 rounded-lg'),
+          {backgroundColor: '#59C1CC', flexDirection: 'row'},
+        ]}>
+        <View>
+          <View style={tw('flex-row justify-between')}>
+            <View>
+              <Text style={[tw('text-2xl font-bold'), {color: 'white'}]}>
+                {name}
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
+      </Card>
     );
   };
 
   const renderLoader = () => {
     return isLoading ? (
-      <View style={styles.loaderStyle}>
+      <View style={{marginVertical: 16, alignItems: 'center'}}>
         <ActivityIndicator size="large" color="#aaa" />
       </View>
     ) : null;
@@ -51,46 +69,25 @@ const PokemonListScreen = () => {
   }, [data]);
 
   return (
-    <>
-      <StatusBar backgroundColor="#000" />
+    <ScrollView nestedScrollEnabled={true} style={{backgroundColor: 'white'}}>
+      <View style={{marginTop: 10}}>
+        <View style={[tw('py-5 border-b'), {borderColor: '#59C1CC'}]}>
+          <Text
+            style={[tw(`text-center text-xl font-bold`), {color: '#59C1CC'}]}>
+            List pokemons
+          </Text>
+        </View>
+      </View>
       <FlatList
         data={pokemons}
         renderItem={renderItem}
-        keyExtractor={item => item.name}
         ListFooterComponent={renderLoader}
+        keyExtractor={(_, index) => index.toString()}
         onEndReached={loadMoreItem}
         onEndReachedThreshold={0}
       />
-    </>
+    </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  itemWrapperStyle: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-  },
-  itemImageStyle: {
-    width: 50,
-    height: 50,
-    marginRight: 16,
-  },
-  contentWrapperStyle: {
-    justifyContent: 'space-around',
-  },
-  txtNameStyle: {
-    fontSize: 16,
-  },
-  txtEmailStyle: {
-    color: '#777',
-  },
-  loaderStyle: {
-    marginVertical: 16,
-    alignItems: 'center',
-  },
-});
 
 export default PokemonListScreen;

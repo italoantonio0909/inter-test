@@ -9,7 +9,6 @@ export const pokemonApiSlice = middlewareApi.injectEndpoints({
             queryFn: async ({ limit, offset }, { dispatch }) => {
                 try {
                     const { data } = await mainApi.get<PokemonListPaginate>(`/pokemon?offset=${offset.toString()}&limit=${limit.toString()}`);
-                    console.log({ data })
                     return { data };
                 } catch (error: any) {
                     return { error }

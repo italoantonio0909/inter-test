@@ -4,10 +4,11 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  SafeAreaView,
+  ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
-import tw from 'tailwind-react-native-classnames';
+
 import {useState} from 'react';
 import {Input} from 'react-native-elements';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,13 +17,19 @@ import {pokemonAddList} from '../slices/pokemonSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {usePokemonSearchBynameQuery} from '../slices/pokemonApiSlice';
 import {PokemonListSelected} from '../interfaces/PokemonListSelected';
+import {Image} from 'react-native-elements/dist/image/Image';
+import {Card} from '@rneui/themed';
+import {Move, Species} from '../interfaces/PokemonResponse';
+import {useTailwind} from 'tailwind-rn';
 
 const PokemonSearchScreen = () => {
   const dispatch = useAppDispatch();
 
+  const tw = useTailwind();
+
   const [pokemonName, setPokemonName] = useState<string>('');
 
-  const {PokemonListSelected} = useAppSelector(state => state.pokemon);
+  const {pokemonListSelected} = useAppSelector(state => state.pokemon);
 
   const {data, isFetching} = usePokemonSearchBynameQuery(
     {
@@ -69,66 +76,88 @@ const PokemonSearchScreen = () => {
     } catch (e) {}
   };
 
+  const Item = ({
+    name,
+    order,
+    moves,
+    species,
+  }: {
+    name: string;
+    order: number;
+    moves: Array<Move>;
+    species: Species;
+  }) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          const movesName = moves?.map(e => ({name: e.move.name}));
+          pokemonAddListAction({
+            name,
+            moves: movesName,
+            species: species.name,
+            order,
+          });
+        }}>
+        <Card containerStyle={tw('p-5 rounded-lg')}>
+          <View>
+            <View style={tw('flex-row justify-between')}>
+              <View>
+                <Text style={[tw('text-2xl font-bold'), {color: 'black'}]}>
+                  # {order}
+                </Text>
+                <Text style={[tw('text-center text-xl'), {color: 'black'}]}>
+                  {name}
+                </Text>
+              </View>
+              <View style={tw('flex-row items-center justify-end')}>
+                <Ionicons
+                  style={tw('mb-5 ml-auto')}
+                  name="add"
+                  size={50}
+                  color="#59C1CC"
+                />
+              </View>
+            </View>
+          </View>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <SafeAreaView style={tw`bg-black flex-grow`}>
-      <Text style={tw`text-center py-5 text-xl`}>Pokemon Search</Text>
-      <View style={tw`border-t border-gray-200 flex-shrink`}>
-        <View>
-          <Input
-            placeholder="Pokemon name"
-            autoCompleteType
-            autoCapitalize="none"
-            value={pokemonName}
-            onChangeText={e => setPokemonName(e)}
-          />
-        </View>
-      </View>
+    <ScrollView nestedScrollEnabled={true} style={{backgroundColor: '#59C1CC'}}>
+      <Image
+        style={tw('w-full h-64')}
+        source={{
+          uri: 'https://i.pinimg.com/originals/34/c1/e5/34c1e5d371d64a581b1902ec5c4509f4.png',
+        }}
+        PlaceholderContent={<ActivityIndicator />}
+      />
+      <Input
+        placeholder="Search pokemon name..."
+        autoCompleteType
+        containerStyle={tw('bg-white pt-5 pb-0 px-10')}
+        autoCapitalize="none"
+        value={pokemonName}
+        onChangeText={e => setPokemonName(e.trim())}
+      />
+
       {data && (
         <FlatList
           data={[data!]}
           keyExtractor={item => `pokemon-reference-${item?.id}`}
-          renderItem={({item: {name, order, species, moves}}) => (
-            <TouchableOpacity
-              onPress={() => {
-                const movesName = moves?.map(e => ({name: e.move.name}));
-                pokemonAddListAction({
-                  name,
-                  moves: movesName,
-                  species: species.name,
-                  order,
-                });
-              }}
-              style={tw`flex-row justify-between items-center px-10`}>
-              <View>
-                <Text>{name}</Text>
-                <Text>{order}</Text>
-              </View>
-              <View>
-                <Ionicons name="add" size={30} />
-              </View>
-            </TouchableOpacity>
+          renderItem={({item}) => (
+            <Item
+              name={item.name}
+              moves={item.moves}
+              order={item.order}
+              species={item.species}
+            />
           )}
         />
       )}
-    </SafeAreaView>
+    </ScrollView>
   );
 };
-
-const inputStyle = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    padding: 20,
-    flex: 0,
-  },
-  textInput: {
-    backgroundColor: '#DDDDDF',
-    borderRadius: 0,
-    fontSize: 10,
-  },
-  textInputContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 0,
-  },
-});
 
 export default PokemonSearchScreen;

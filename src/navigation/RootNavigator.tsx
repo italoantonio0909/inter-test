@@ -13,7 +13,7 @@ const TAB_ICONS = {
   AddedScreen: 'layers',
 };
 
-const Navigator = () => {
+const RootNavigator = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -35,4 +35,4 @@ const Navigator = () => {
   );
 };
 
-export default Navigator;
+export default RootNavigator;

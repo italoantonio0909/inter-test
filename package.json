@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build:tailwind": "tailwindcss --input input.css --output tailwind.css --no-autoprefixer && tailwind-rn",
+    "dev:tailwind": "concurrently \"tailwindcss --input input.css --output tailwind.css --no-autoprefixer --watch\" \"tailwind-rn --watch\""
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.10",
@@ -15,6 +17,8 @@
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.0",
     "@reduxjs/toolkit": "^1.8.5",
+    "@rneui/base": "^4.0.0-rc.6",
+    "@rneui/themed": "^4.0.0-rc.6",
     "@stream-io/flat-list-mvcp": "^0.10.2",
     "axios": "^0.27.2",
     "react": "18.1.0",
@@ -24,7 +28,7 @@
     "react-native-screens": "^3.17.0",
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.2",
-    "tailwind-react-native-classnames": "^1.5.1"
+    "tailwind-rn": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -35,10 +39,13 @@
     "@types/react-native": "^0.70.3",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^26.6.3",
+    "concurrently": "^7.4.0",
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.72.1",
+    "postcss": "^8.4.16",
     "react-test-renderer": "18.1.0",
+    "tailwindcss": "^3.1.8",
     "typescript": "^4.8.3"
   },
   "jest": {
